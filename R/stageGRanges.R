@@ -47,16 +47,9 @@ setMethod("stageObject", "GRanges", function(x, dir, path, child=FALSE, coord.na
         stop("failed to stage 'seqinfo(<", class(x)[1], ">)'\n  - ", e$message)
     })
 
-    # Saving other metadata.
-    range_data <- NULL
-    if (!is.null(mcols.name)) {
-        range_data <- .processMcols(x, dir, path, mcols.name)
-    }
-
-    other_data <- NULL
-    if (!is.null(meta.name)) {
-        other_data <- .processMetadata(x, dir, path, meta.name)
-    }
+    # Saving other metadata. This automatically returns NULL if the names are NULL.
+    range_data <- .processMcols(x, dir, path, mcols.name)
+    other_data <- .processMetadata(x, dir, path, meta.name)
 
     # Saving the GRanges (removing the metadata first, otherwise we'd get extra columns).
     mcols(x) <- NULL

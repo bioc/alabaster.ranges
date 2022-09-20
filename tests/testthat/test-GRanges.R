@@ -75,6 +75,13 @@ test_that("stageObject works with extra mcols", {
 
     gr2 <- loadGRanges(out, tmp)
     expect_equal(gr, gr2)
+
+    # Ignoring them.
+    out <- stageObject(gr, tmp, "nomcols", mcols.name=NULL)
+    expect_null(out$genomic_ranges$range_data)
+
+    gr3 <- loadGRanges(out, tmp)
+    expect_identical(ncol(mcols(gr3)), 0L)
 })
 
 test_that("stageObject works with extra metadata", {
@@ -87,5 +94,12 @@ test_that("stageObject works with extra metadata", {
 
     gr2 <- loadGRanges(out, tmp)
     expect_equal(gr, gr2)
+
+    # Ignoring them.
+    out <- stageObject(gr, tmp, "nometa", meta.name=NULL)
+    expect_null(out$genomic_ranges$other_data)
+
+    gr3 <- loadGRanges(out, tmp)
+    expect_identical(length(metadata(gr3)), 0L)
 })
 

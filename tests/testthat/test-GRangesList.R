@@ -43,12 +43,20 @@ test_that("stageObject handles its own metadata", {
     tmp <- tempfile()
     dir.create(tmp)
     grlmeta <- .validatedStage(grl, tmp, "grl")
+    expect_false(is.null(grlmeta$compressed_list$element_data))
 
     emeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$compressed_list$element_data$resource$path, ".json")), simplifyVector=FALSE)
     expect_identical(length(emeta$data_frame$columns), 1L)
 
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, grl)
+
+    # Ignoring them.
+    out <- stageObject(grl, tmp, "nomcols", mcols.name=NULL)
+    expect_null(out$compressed_list$element_data)
+
+    grl3 <- loadGRangesList(out, tmp)
+    expect_identical(ncol(mcols(grl3)), 0L)
 })
 
 test_that("stageObject handles GRLs with internal metadata", {
@@ -109,4 +117,11 @@ test_that("stageObject works with extra metadata", {
 
     grl2 <- loadGRangesList(out, tmp)
     expect_equal(grl, grl2)
+
+    # Ignoring them.
+    out <- stageObject(grl, tmp, "nometa", meta.name=NULL)
+    expect_null(out$compressed_list$other_data)
+
+    grl3 <- loadGRangesList(out, tmp)
+    expect_identical(length(metadata(grl3)), 0L)
 })

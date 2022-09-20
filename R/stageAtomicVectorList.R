@@ -70,15 +70,9 @@ setMethod("stageObject", "CompressedAtomicList", function(x, dir, path, child=FA
     }
     .quickWriteCsv(rd, path=ofile)
 
-    element_data <- NULL    
-    if (!is.null(mcols.name)) {
-        element_data <- .processMcols(x, dir, path, mcols.name)
-    }
-
-    other_data <- NULL
-    if (!is.null(meta.name)) {
-        other_data <- .processMetadata(x, dir, path, meta.name)
-    }
+    # Automatically returns NULL if it's the names are NULL.
+    element_data <- .processMcols(x, dir, path, mcols.name)
+    other_data <- .processMetadata(x, dir, path, meta.name)
 
     meta <- list(
         `$schema`=schema,
