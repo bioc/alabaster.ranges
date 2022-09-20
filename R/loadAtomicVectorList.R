@@ -34,7 +34,7 @@ loadAtomicVectorList <- function(info, project) {
 .load_compressed <- function(contents, info, project) {
     path <- acquireFile(project, info$path)
 
-    has.names <- !is.null(info$compressed_list$names)
+    has.names <- isTRUE(info$compressed_list$names)
     groups <- .quickReadCsv(path, 
         c(number="integer"), 
         row.names=has.names,

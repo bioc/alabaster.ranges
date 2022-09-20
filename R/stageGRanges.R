@@ -89,7 +89,7 @@ setMethod("stageObject", "GRanges", function(x, dir, path, child=FALSE, coord.na
         is_child=child,
         genomic_ranges=list(
             length=NROW(x),
-            names=.uniqueValues(names(x)),
+            names=!is.null(names(x)),
             sequence_information=list(resource=si.info),
             range_data=range_data,
             other_data=other_data,

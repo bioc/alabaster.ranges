@@ -21,7 +21,7 @@ test_that("stageObject works correctly", {
     expect_identical(rr$end, end(gr))
 
     # Metadata is saved properly.
-    expect_false(is.null(out$genomic_ranges$names))
+    expect_true(out$genomic_ranges$names)
     expect_null(out$genomic_ranges$range_data) # no mcols yet, see below.
     expect_null(out$genomic_ranges$other_data) # no metadata yet, see below.
     expect_identical(out$genomic_ranges$compression, "gzip")
@@ -53,7 +53,7 @@ test_that("stageObject works without names", {
     tmp <- tempfile()
     dir.create(tmp)
     out <- stageObject(gr, tmp, "thing")
-    expect_null(out$genomic_ranges$names)
+    expect_false(out$genomic_ranges$names)
 
     gr2 <- loadGRanges(out, tmp)
     expect_identical(gr, gr2)

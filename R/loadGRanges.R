@@ -31,7 +31,7 @@ loadGRanges <- function(info, project) {
 
     # Convert the CSV into a GRanges.
     path <- acquireFile(project, info$path)
-    gr.has.names <- !is.null(info$genomic_ranges$names)
+    gr.has.names <- isTRUE(info$genomic_ranges$names)
 
     rr.df <- .quickReadCsv(path, 
         expected.columns = c(seqnames="character", start="integer", end="integer", strand="character"),

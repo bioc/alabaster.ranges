@@ -17,7 +17,7 @@ test_that("stageObject works correctly", {
     dir.create(tmp)
 
     grlmeta <- .validatedStage(grl, tmp, "grl")
-    expect_false(is.null(grlmeta$compressed_list$names))
+    expect_true(grlmeta$compressed_list$names)
     .writeMetadata(grlmeta, tmp)
 
     expect_null(grlmeta$compressed_list$element_data) # no metadata yet
@@ -26,7 +26,7 @@ test_that("stageObject works correctly", {
 
     # Coordinate information is saved correctly. 
     grmeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$genomic_ranges_list$concatenated$resource$path, ".json")), simplifyVector=FALSE)
-    expect_false(is.null(grmeta$genomic_ranges$names))
+    expect_true(grmeta$genomic_ranges$names)
 
     grouping <- read.csv(file.path(tmp, grlmeta$path), row.names=1)
     expect_false(is.null(grouping$number))
@@ -77,9 +77,9 @@ test_that("stageObject handles unnamed GRLs", {
     names(grl) <- NULL
 
     grlmeta <- .validatedStage(grl, tmp, "grl")
-    expect_true(is.null(grlmeta$compressed_list$names))
+    expect_false(grlmeta$compressed_list$names)
     grmeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$genomic_ranges_list$concatenated$resource$path, ".json")), simplifyVector=FALSE)
-    expect_true(is.null(grmeta$compressed_list$names))
+    expect_false(grmeta$genomic_ranges$names)
 
     # Round trip works.
     grl2 <- loadGRangesList(grlmeta, tmp)
