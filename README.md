@@ -1,7 +1,7 @@
 # Save genomic ranges objects to file
 
 The **alabaster.ranges** package implements methods for saving and loading `GRanges` and `GRangesList` objects under the **alabaster** framework.
-It provides a language-agnostic method for serializing data in these gneomic coordinates as well as other compressed list.
+It provides a language-agnostic method for serializing genomic coordinates in these objects, as well as data in related objects like compressed lists.
 To get started, install the package and its dependencies from GitHub:
 
 ```r
