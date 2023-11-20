@@ -29,6 +29,12 @@ test_that("stageObject works correctly", {
     # Round trip works.
     gr2 <- loadGRanges(out, tmp)
     expect_identical(gr, gr2)
+
+    # Works in the new world.
+    tmp <- tempfile()
+    saveObject(gr, tmp)
+    gr2 <- readObject(tmp)
+    expect_identical(gr, gr2)
 })
 
 test_that("stageObject handles non-trivial seqinfo", {
@@ -45,6 +51,12 @@ test_that("stageObject handles non-trivial seqinfo", {
     # Round trip works.
     gr2 <- loadGRanges(out, tmp)
     expect_identical(gr, gr2)
+
+    # Works in the new world.
+    tmp <- tempfile()
+    saveObject(gr, tmp)
+    gr2 <- readObject(tmp)
+    expect_identical(gr, gr2)
 })
 
 test_that("stageObject works without names", {
@@ -57,6 +69,12 @@ test_that("stageObject works without names", {
 
     gr2 <- loadGRanges(out, tmp)
     expect_identical(gr, gr2)
+
+    # Works in the new world.
+    tmp <- tempfile()
+    saveObject(gr, tmp)
+    gr2 <- readObject(tmp)
+    expect_identical(gr, gr2)
 })
 
 test_that("stageObject works with extra mcols", {
@@ -67,6 +85,12 @@ test_that("stageObject works with extra mcols", {
     dir.create(tmp)
     out <- stageObject(gr, tmp, "thing")
     expect_false(is.null(out$genomic_ranges$range_data))
+
+    # Works in the new world.
+    ntmp <- tempfile()
+    saveObject(gr, ntmp)
+    gr2 <- readObject(ntmp)
+    expect_identical(gr, gr2)
 
     # Checking that they aren't present in the CSV.
     rr <- read.csv(file.path(tmp, out$path), row.names=1)
@@ -95,6 +119,12 @@ test_that("stageObject works with extra metadata", {
     gr2 <- loadGRanges(out, tmp)
     expect_equal(gr, gr2)
 
+    # Works in the new world.
+    ntmp <- tempfile()
+    saveObject(gr, ntmp)
+    gr2 <- readObject(ntmp)
+    expect_identical(gr, gr2)
+
     # Ignoring them.
     out <- stageObject(gr, tmp, "nometa", meta.name=NULL)
     expect_null(out$genomic_ranges$other_data)
@@ -102,4 +132,3 @@ test_that("stageObject works with extra metadata", {
     gr3 <- loadGRanges(out, tmp)
     expect_identical(length(metadata(gr3)), 0L)
 })
-

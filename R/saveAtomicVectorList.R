@@ -1,40 +1,63 @@
-#' Stage a compressed list of atomic vectors
+#' Save compressed list of atomic vectors to disk
 #'
-#' Stage a \linkS4class{CompressedAtomicList} object.
+#' Save a \linkS4class{CompressedAtomicList} object to its on-disk representation.
 #'
-#' @inheritParams alabaster.base::stageObject
-#' @param group.name String containing the name of the file inside \code{path} to save the list groupings.
-#' @param concat.name String containing the extension-less name of the file inside \code{path} to save the concatenated elements.
-#' @param mcols.name String specifying the name of the directory inside \code{path} to save the \code{\link{mcols}}.
-#' If \code{NULL}, per-element metadata is not saved.
-#' @param meta.name String specifying the name of the directory inside \code{path} to save \code{\link{metadata}(x)}.
-#' If \code{NULL}, object metadata is not saved.
+#' @param x A \linkS4class{CompressedAtomicList} object.
+#' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
-#' A named list containing the metadata for \code{x}.
-#' The contents of \code{x} are saved inside \code{path} and referenced from the metadata. 
+#' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
-#' @details
-#' The staging process will save both the interval groupings and the concatenated vector into separate files.
-#' The concatenated vector is coerced into a DataFrame and staged with the corresponding \code{\link{stageObject}} method.
-#' The CompressedList may also be decorated with metadata for each list element in its \code{\link{mcols}}, which is saved to \code{mcols.name}.
-#' No file is created at \code{mcols.name} if \code{\link{mcols}(x)} is \code{NULL} or has no columns.
+#' @seealso
+#' \code{\link{readAtomicVectorList}}, to read a \linkS4class{CompressedAtomicList} from disk.
 #'
 #' @author Aaron Lun
 #' @examples
-#' tmp <- tempfile()
-#' dir.create(tmp)
-#' 
 #' library(S4Vectors)
 #' X <- splitAsList(LETTERS, sample(3, 26, replace=TRUE))
-#' stageObject(X, tmp, path="test1")
-#' list.files(file.path(tmp, "test1"))
+#'
+#' tmp <- tempfile()
+#' saveObject(X, tmp)
+#' list.files(tmp, recursive=TRUE)
 #'
 #' @export
-#' @rdname stageAtomicVectorList
-#' @importFrom BiocGenerics unlist
-#' @importFrom S4Vectors DataFrame
-#' @importClassesFrom IRanges CompressedAtomicList
+#' @aliases stageObject,CompressedAtomicList-method
+#' @rdname saveAtomicVectorList
+setMethod("saveObject", "CompressedAtomicList", function(x, path, ...) .save_compressed_list(x, path=path, name="atomic_vector_list", ...))
+
+#' @import BiocGenerics IRanges rhdf5 alabaster.base
+.save_compressed_list <- function(x, path, name, ...) {
+    dir.create(path, showWarnings=FALSE)
+    saveObject(unlist(x, use.names=FALSE), file.path(path, "concatenated"), ...)
+    saveMetadata(
+         x,
+         metadata.path=file.path(path, "other_annotations"),
+         mcols.path=file.path(path, "element_annotations"),
+         ...
+    )
+
+    fpath <- file.path(path, "partitions.h5")
+    h5createFile(fpath)
+    h5createGroup(fpath, name)
+
+    lpath <- paste0(name, "/lengths")
+    h5createDataset(fpath, lpath, dims=length(x), H5type="H5T_NATIVE_UINT32")
+    h5write(lengths(x), fpath, lpath)
+
+    if (!is.null(names(x))) {
+        h5write(names(x), fpath, paste0(name, "/names"))
+    }
+
+    write(file=file.path(path, "OBJECT"), name)
+    invisible(NULL)
+}
+
+##############################
+######### OLD STUFF ##########
+##############################
+
+#' @export
+#' @import S4Vectors
 setMethod("stageObject", "CompressedAtomicList", function(x, dir, path, child=FALSE, group.name="grouping", concat.name="concatenated", mcols.name="mcols", meta.name="other") {
     rd <- DataFrame(values=unlist(x, use.names=FALSE))
     .compressed_stager(x, 
@@ -50,7 +73,6 @@ setMethod("stageObject", "CompressedAtomicList", function(x, dir, path, child=FA
     )
 })
 
-#' @import alabaster.base
 .compressed_stager <- function(x, concatenated, schema, dir, path, group.name, concat.name, mcols.name, meta.name, extra.args=list(), child=FALSE) {
     dir.create(file.path(dir, path))
 

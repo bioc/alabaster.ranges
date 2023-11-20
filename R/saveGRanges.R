@@ -1,41 +1,64 @@
-#' Stage a GRanges object
+#' Save a GRanges object to disk
 #'
-#' Stage a \linkS4class{GRanges} object containing genomic intervals.
+#' Save a \linkS4class{GRanges} object to its on-disk representation .
 #' 
 #' @param x A \linkS4class{GRanges} object or one of its subclasses.
-#' @inheritParams alabaster.base::stageObject
-#' @param coord.name String containing the name of the file inside \code{path} to save the genomic coordinates.
-#' @param seqinfo.name String containing the name of the file inside \code{path} to save the sequence information.
-#' @param mcols.name String specifying the name of the directory inside \code{path} to save \code{\link{mcols}(x)}.
-#' If \code{NULL}, per-element metadata is not saved.
-#' @param meta.name String specifying the name of the directory inside \code{path} to save \code{\link{metadata}(x)}.
-#' If \code{NULL}, object metadata is not saved.
+#' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
-#' A named list containing the metadata for \code{x}.
-#' The contents of \code{x} are saved into various files inside \code{file.path(dir, path)}.
+#' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
-#' @details
-#' Setting \code{mcols.name=NULL} and \code{meta.name=NULL} will skip the staging of the \code{\link{mcols}} and \code{\link{metadata}}.
-#' This is primarily useful for use in staging RangedSummarizedExperiments where the \code{\link{mcols}} have already been saved as part of the \code{rowData}.
+#' @seealso
+#' \code{\link{readGRanges}}, to read a \linkS4class{GRanges} from disk.
 #'
 #' @examples
 #' gr <- GRanges(c("chrA", "chrB"), IRanges(c(1, 5), c(100, 200)))
 #' seqlengths(gr) <- c(chrA=1000, chrB=2000)
 #'
 #' tmp <- tempfile()
-#' dir.create(tmp)
-#' stageObject(gr, tmp, path="ranges")
+#' saveObject(gr, tmp)
 #' list.files(tmp, recursive=TRUE)
 #'
 #' @author Aaron Lun
 #' 
 #' @export
-#' @import alabaster.base
-#' @import methods
-#' @importFrom GenomeInfoDb seqinfo
-#' @importFrom S4Vectors mcols<-
-#' @rdname stageGRanges
+#' @aliases stageObject,GRanges-method
+#' @rdname saveGRanges
+#' @import rhdf5 methods alabaster.base GenomicRanges
+setMethod("saveObject", "GRanges", function(x, path, ...) {
+    dir.create(path, showWarnings=FALSE)
+
+    saveObject(seqinfo(x), file.path(path, "sequence_information"), ...)
+    saveMetadata(
+        x, 
+        mcols.path=file.path(path, "range_annotations"),
+        metadata.path=file.path(path, "other_annotations"), 
+        ...
+    )
+
+    fpath <- file.path(path, "ranges.h5")
+    h5createFile(fpath)
+    name <- "genomic_ranges"
+    h5createGroup(fpath, name)
+
+    h5write(match(as.character(seqnames(x)), seqnames(seqinfo(x))) - 1L, fpath, paste0(name, "/sequence"))
+    h5write(start(x), fpath, paste0(name, "/start"))
+    h5write(width(x), fpath, paste0(name, "/width"))
+    h5write(match(as.character(strand(x)), c("-", "*", "+")) - 1L, fpath, paste0(name, "/strand"))
+
+    if (!is.null(names(x))) {
+        h5write(names(x), fpath, paste0(name, "/name"))
+    }
+
+    write(file=file.path(path, "OBJECT"), name)
+    invisible(NULL)
+})
+
+##############################
+######### OLD STUFF ##########
+##############################
+
+#' @export
 setMethod("stageObject", "GRanges", function(x, dir, path, child=FALSE, coord.name="ranges", seqinfo.name="seqinfo", mcols.name="mcols", meta.name="other") {
     dir.create(file.path(dir, path), showWarnings=FALSE)
 

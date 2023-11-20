@@ -35,6 +35,11 @@ test_that("stageObject works correctly", {
     # Round trip works.
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, grl)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 })
 
 test_that("stageObject handles its own metadata", {
@@ -50,6 +55,11 @@ test_that("stageObject handles its own metadata", {
 
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, grl)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 
     # Ignoring them.
     out <- stageObject(grl, tmp, "nomcols", mcols.name=NULL)
@@ -75,6 +85,11 @@ test_that("stageObject handles GRLs with internal metadata", {
     # Round trip works correctly.
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, grl)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 })
 
 test_that("stageObject handles unnamed GRLs", {
@@ -92,6 +107,11 @@ test_that("stageObject handles unnamed GRLs", {
     # Round trip works.
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, grl)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 })
 
 test_that("stageObject handles empty GRLs", {
@@ -105,6 +125,11 @@ test_that("stageObject handles empty GRLs", {
 
     grl2 <- loadGRangesList(grlmeta, tmp)
     expect_identical(grl2, copy)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 })
 
 test_that("stageObject works with extra metadata", {
@@ -117,6 +142,11 @@ test_that("stageObject works with extra metadata", {
 
     grl2 <- loadGRangesList(out, tmp)
     expect_equal(grl, grl2)
+
+    # Works in the new world.
+    tmp2 <- tempfile()
+    saveObject(grl, tmp2)
+    expect_identical(grl, readObject(tmp2))
 
     # Ignoring them.
     out <- stageObject(grl, tmp, "nometa", meta.name=NULL)

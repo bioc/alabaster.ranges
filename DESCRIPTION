@@ -14,18 +14,18 @@ Depends:
     alabaster.base
 Imports:
     methods,
-    utils,
     S4Vectors,
     BiocGenerics,
     IRanges,
-    GenomeInfoDb
+    GenomeInfoDb,
+    rhdf5
 Suggests:
     testthat,
     knitr,
     BiocStyle,
     jsonlite
 VignetteBuilder: knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 biocViews:
     DataImport,
     DataRepresentation

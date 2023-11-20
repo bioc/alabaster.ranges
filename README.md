@@ -2,12 +2,10 @@
 
 The **alabaster.ranges** package implements methods for saving and loading `GRanges` and `GRangesList` objects under the **alabaster** framework.
 It provides a language-agnostic method for serializing genomic coordinates in these objects, as well as data in related objects like compressed lists.
-To get started, install the package and its dependencies from GitHub:
+To get started, install the package and its dependencies from [Bioconductor](https://bioconductor.org/packages/alabaster.ranges):
 
 ```r
-devtools::install_github("ArtifactDB/alabaster.schemas")
-devtools::install_github("ArtifactDB/alabaster.base")
-devtools::install_github("ArtifactDB/alabaster.ranges")
+BiocManager::install("alabaster.ranges")
 ```
 
 We can then save a `GRanges` to a file, preserving its `metadata` and `mcols`:
@@ -20,12 +18,9 @@ metadata(gr)$genome <- "Aaron"
 
 library(alabaster.ranges)
 tmp <- tempfile()
-dir.create(tmp)
-meta <- stageObject(gr, tmp, "gr")
-meta[["$schema"]]
-## [1] "genomic_ranges/v1.json"
+saveObject(gr, tmp)
 
-roundtrip <- loadObject(meta, tmp)
+roundtrip <- loadObject(tmp)
 class(roundtrip)
 ## [1] "GRanges"
 ## attr(,"package")
@@ -42,12 +37,9 @@ metadata(genes)$genome <- "Aaron"
 
 library(alabaster.ranges)
 tmp <- tempfile()
-dir.create(tmp)
-meta <- stageObject(genes, tmp, "grl")
-meta[["$schema"]]
-## [1] "genomic_ranges_list/v1.json"
+saveObject(genes, tmp)
 
-roundtrip <- loadObject(meta, tmp)
+roundtrip <- loadObject(tmp)
 class(roundtrip)
 ## [1] "CompressedGRangesList"
 ## attr(,"package")
