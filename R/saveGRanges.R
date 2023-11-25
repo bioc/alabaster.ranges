@@ -37,17 +37,22 @@ setMethod("saveObject", "GRanges", function(x, path, ...) {
     )
 
     fpath <- file.path(path, "ranges.h5")
-    h5createFile(fpath)
-    name <- "genomic_ranges"
-    h5createGroup(fpath, name)
+    fhandle <- H5Fcreate(fpath, "H5F_ACC_TRUNC")
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
 
-    h5write(match(as.character(seqnames(x)), seqnames(seqinfo(x))) - 1L, fpath, paste0(name, "/sequence"))
-    h5write(start(x), fpath, paste0(name, "/start"))
-    h5write(width(x), fpath, paste0(name, "/width"))
-    h5write(match(as.character(strand(x)), c("-", "*", "+")) - 1L, fpath, paste0(name, "/strand"))
+    name <- "genomic_ranges"
+    ghandle <- H5Gcreate(fhandle, name)
+    on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
+    h5_write_attribute(ghandle, "version", "1.0", scalar=TRUE)
+
+    seqcodes <- match(as.character(seqnames(x)), seqnames(seqinfo(x))) - 1L
+    h5_write_vector(ghandle, "sequence", seqcodes, type="H5T_NATIVE_UINT32")
+    h5_write_vector(ghandle, "start", start(x))
+    h5_write_vector(ghandle, "width", width(x), type="H5T_NATIVE_UINT32")
+    h5_write_vector(ghandle, "strand", match(as.character(strand(x)), c("-", "*", "+")) - 2L, type="H5T_NATIVE_INT8")
 
     if (!is.null(names(x))) {
-        h5write(names(x), fpath, paste0(name, "/name"))
+        h5_write_vector(ghandle, "name", names(x))
     }
 
     write(file=file.path(path, "OBJECT"), name)

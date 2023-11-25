@@ -26,52 +26,52 @@
 setMethod("saveObject", "Seqinfo", function(x, path, ...) {
     dir.create(path, showWarnings=FALSE)
     fpath <- file.path(path, "info.h5")
+    fhandle <- H5Fcreate(fpath, "H5F_ACC_TRUNC")
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
 
-    h5createFile(fpath)
     name <- "sequence_information"
-    h5createGroup(fpath, name)
+    ghandle <- H5Gcreate(fhandle, name)
+    on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
+    h5_write_attribute(ghandle, "version", "1.0", scalar=TRUE)
 
     sq <- seqnames(x)
     if (anyNA(sq)) {
         stop("'seqnames(<", class(x)[1], ">)' should not be missing")
     }
-    h5write(sq, fpath, paste0(name, "/name"))
+    h5_write_vector(ghandle, "name", sq)
 
     trans <- transformVectorForHdf5(genome(x))
-    genome.path <- paste0(name, "/genome")
-    h5write(trans$transformed, fpath, genome.path)
-    if (!is.null(trans$placeholder)) {
-        addMissingPlaceholderAttributeForHdf5(fpath, genome.path, trans$placeholder)
-    }
+    local({
+        dhandle <- h5_write_vector(ghandle, "genome", trans$transformed, emit=TRUE)
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        if (!is.null(trans$placeholder)) {
+            h5_write_attribute(dhandle, missingPlaceholderName, trans$placeholder, scalar=TRUE)
+        }
+    })
 
     trans <- transformVectorForHdf5(isCircular(x))
-    circ.path <- paste0(name, "/circular")
-    h5write(trans$transformed, fpath, circ.path)
-    if (!is.null(trans$placeholder)) {
-        addMissingPlaceholderAttributeForHdf5(fpath, circ.path, trans$placeholder)
-    }
+    local({
+        dhandle <- h5_write_vector(ghandle, "circular", trans$transformed, emit=TRUE)
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        if (!is.null(trans$placeholder)) {
+            h5_write_attribute(dhandle, missingPlaceholderName, trans$placeholder, scalar=TRUE)
+        }
+    })
 
     ll <- seqlengths(x)
-    len.path <- paste0(name, "/length")
-    h5createDataset(fpath, len.path, dims=length(ll), H5type = "H5T_NATIVE_UINT32")
     placeholder <- NULL
     if (anyNA(ll)) {
         placeholder <- 2^32 - 1
         ll <- as.double(ll)
         ll[is.na(ll)] <- placeholder
     }
-    h5write(ll, fpath, len.path)
-    if (!is.null(placeholder)) {
-        (function() {
-            fhandle <- H5Fopen(fpath)
-            on.exit(H5Fclose(fhandle))
-            dhandle <- H5Dopen(fhandle, len.path)
-            on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
-            ahandle <- H5Acreate(dhandle, "missing-value-placeholder", "H5T_NATIVE_UINT32", H5Screate("H5S_SCALAR"))
-            on.exit(H5Aclose(ahandle), add=TRUE, after=FALSE)
-            H5Awrite(ahandle, placeholder)
-        })()
-    }
+    local({
+        dhandle <- h5_write_vector(ghandle, "length", ll, type="H5T_NATIVE_UINT32", emit=TRUE)
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        if (!is.null(placeholder)) {
+            h5_write_attribute(dhandle, missingPlaceholderName, placeholder, type="H5T_NATIVE_UINT32", scalar=TRUE)
+        }
+    })
 
     write(file=file.path(path, "OBJECT"), name)
     invisible(NULL)

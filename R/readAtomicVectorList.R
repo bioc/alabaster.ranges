@@ -32,14 +32,14 @@ readAtomicVectorList <- function(path, ...) {
 
     fpath <- file.path(path, "partitions.h5")
     fhandle <- H5Fopen(fpath)
-    on.exit(H5Fclose(fhandle))
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
     ghandle <- H5Gopen(fhandle, name)
     on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
 
-    runs <- as.vector(h5read(ghandle, "lengths"))
+    runs <- h5_read_vector(ghandle, "lengths")
     output <- relist(concat, PartitioningByWidth(x=runs))
-    if (alabaster.base:::h5exists(ghandle, "names")) {
-        names(output) <- as.vector(h5read(ghandle, "names"))
+    if (h5_object_exists(ghandle, "names")) {
+        names(output) <- h5_read_vector(ghandle, "names")
     }
 
     readMetadata(

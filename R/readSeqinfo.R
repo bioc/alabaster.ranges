@@ -22,33 +22,38 @@
 readSeqinfo <- function(path, ...) {
     fpath <- file.path(path, "info.h5")
 
+    fhandle <- H5Fopen(fpath, "H5F_ACC_RDONLY")
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
+
     name <- "sequence_information"
-    seqnames <- as.vector(h5read(fpath, paste0(name, "/name")))
-    seqnames <- as.character(seqnames)
+    ghandle <- H5Gopen(fhandle, name)
+    on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
 
-    gpath <- paste0(name, "/genome")
-    genome <- as.vector(h5read(fpath, gpath))
-    placeholder <- h5readAttributes(fpath, gpath)[["missing-value-placeholder"]]
-    if (!is.null(placeholder)) {
-        genome[genome == placeholder] <- NA
-    }
-    genome <- as.character(genome)
+    seqnames <- h5_read_vector(ghandle, "name")
 
-    cpath <- paste0(name, "/circular")
-    circular <- as.vector(h5read(fpath, cpath))
-    placeholder <- h5readAttributes(fpath, cpath)[["missing-value-placeholder"]]
-    if (!is.null(placeholder)) {
-        circular[circular == placeholder] <- NA
-    }
-    circular <- as.logical(circular)
+    genome <- local({
+        dhandle <- H5Dopen(ghandle, "genome")
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        contents <- H5Dread(dhandle, drop=TRUE)
+        missing.placeholder <- h5_read_attribute(dhandle, missingPlaceholderName, check=TRUE, default=NULL)
+        h5_cast(contents, expected.type="string", missing.placeholder=missing.placeholder)
+    })
 
-    lpath <- paste0(name, "/length")
-    seqlengths <- as.vector(h5read(fpath, lpath, bit64conversion="double"))
-    placeholder <- h5readAttributes(fpath, lpath, bit64conversion="double")[["missing-value-placeholder"]]
-    if (!is.null(placeholder)) {
-        seqlengths[seqlengths == placeholder] <- NA
-    }
-    seqlengths <- as.integer(seqlengths)
+    circular <- local({ 
+        dhandle <- H5Dopen(ghandle, "circular")
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        contents <- H5Dread(dhandle, drop=FALSE)
+        missing.placeholder <- h5_read_attribute(dhandle, missingPlaceholderName, check=TRUE, default=NULL)
+        h5_cast(contents, expected.type="boolean", missing.placeholder=missing.placeholder)
+    })
+
+    seqlengths <- local({
+        dhandle <- H5Dopen(ghandle, "length")
+        on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
+        contents <- H5Dread(dhandle, bit64conversion="double")
+        missing.placeholder <- h5_read_attribute(dhandle, missingPlaceholderName, check=TRUE, default=NULL, bit64conversion="double")
+        h5_cast(contents, expected.type="integer", missing.placeholder=missing.placeholder)
+    })
 
     Seqinfo(seqnames=seqnames, seqlengths=seqlengths, isCircular=circular, genome=genome)
 }

@@ -37,15 +37,16 @@ setMethod("saveObject", "CompressedAtomicList", function(x, path, ...) .save_com
     )
 
     fpath <- file.path(path, "partitions.h5")
-    h5createFile(fpath)
-    h5createGroup(fpath, name)
+    fhandle <- H5Fcreate(fpath, "H5F_ACC_TRUNC")
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
 
-    lpath <- paste0(name, "/lengths")
-    h5createDataset(fpath, lpath, dims=length(x), H5type="H5T_NATIVE_UINT32")
-    h5write(lengths(x), fpath, lpath)
+    ghandle <- H5Gcreate(fhandle, name)
+    on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
+    h5_write_attribute(ghandle, "version", "1.0", scalar=TRUE)
 
+    h5_write_vector(ghandle, "lengths", lengths(x), type="H5T_NATIVE_UINT32")
     if (!is.null(names(x))) {
-        h5write(names(x), fpath, paste0(name, "/names"))
+        h5_write_vector(ghandle, "names", names(x))
     }
 
     write(file=file.path(path, "OBJECT"), name)

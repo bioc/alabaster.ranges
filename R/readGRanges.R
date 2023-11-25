@@ -26,22 +26,22 @@ readGRanges <- function(path, ...) {
 
     fpath <- file.path(path, "ranges.h5")
     fhandle <- H5Fopen(fpath)
-    on.exit(H5Fclose(fhandle))
+    on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
     ghandle <- H5Gopen(fhandle, "genomic_ranges")
     on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
 
     x <- GRanges(
-        seqnames(si)[as.vector(h5read(ghandle, "sequence")) + 1L],
+        seqnames(si)[h5_read_vector(ghandle, "sequence") + 1L],
         IRanges(
-            as.vector(h5read(ghandle, "start")),
-            width=as.vector(h5read(ghandle, "width"))
+            h5_read_vector(ghandle, "start"),
+            width=h5_read_vector(ghandle, "width")
         ),
-        c("-", "*", "+")[as.vector(h5read(ghandle, "strand")) + 1L],
+        c("-", "*", "+")[h5_read_vector(ghandle, "strand") + 2L],
         seqinfo=si
     )
 
-    if (alabaster.base:::h5exists(ghandle, "name")) {
-        names(x) <- as.vector(h5read(ghandle, "name"))
+    if (h5_object_exists(ghandle, "name")) {
+        names(x) <- h5_read_vector(ghandle, "name")
     }
 
     readMetadata(x, 
