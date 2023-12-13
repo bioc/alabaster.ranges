@@ -5,10 +5,12 @@
 \alias{loadGRanges}
 \title{Read a GRanges from disk}
 \usage{
-readGRanges(path, ...)
+readGRanges(path, metadata, ...)
 }
 \arguments{
 \item{path}{String containing a path to a directory, itself created with the \code{\link{stageObject}} method for \linkS4class{GRanges}.}
+
+\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
 
 \item{...}{Further arguments to pass to internal \code{\link{altReadObject}} calls.}
 }
@@ -17,6 +19,7 @@ A \linkS4class{GRanges} object.
 }
 \description{
 Read a \linkS4class{GRanges} object from its on-disk representation.
+This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
 }
 \examples{
 gr <- GRanges(c("chrA", "chrB"), IRanges(c(1, 5), c(100, 200)))
@@ -24,9 +27,12 @@ seqlengths(gr) <- c(chrA=1000, chrB=2000)
 
 tmp <- tempfile()
 saveObject(gr, tmp)
-readGRanges(tmp)
+readObject(tmp)
 
 }
 \seealso{
 \code{"\link{saveObject,GRanges-method}"}, to save a \linkS4class{GRanges} to disk.
+}
+\author{
+Aaron Lun
 }

@@ -5,10 +5,12 @@
 \alias{loadSeqinfo}
 \title{Read a Seqinfo from disk}
 \usage{
-readSeqinfo(path, ...)
+readSeqinfo(path, metadata, ...)
 }
 \arguments{
 \item{path}{String containing a path to a directory, itself created with the \code{\link{saveObject}} method for Seqinfo objects.}
+
+\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
 
 \item{...}{Further arguments, ignored.}
 }
@@ -17,13 +19,14 @@ A \linkS4class{Seqinfo} object.
 }
 \description{
 Read a \linkS4class{Seqinfo} object from its on-disk representation.
+This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
 }
 \examples{
 si <- Seqinfo(c("chrA", "chrB"), c(1000, 2000))
 
 tmp <- tempfile()
 saveObject(si, tmp)
-readSeqinfo(tmp)
+readObject(tmp)
 
 }
 \seealso{

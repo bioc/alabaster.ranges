@@ -1,8 +1,10 @@
 #' Load a data frame list
 #'
-#' Load a list of data frames as a \linkS4class{CompressedSplitDataFrameList}, typically from files created by the corresponding \code{\link{stageObject}} method.
+#' Load a list of data frames as a \linkS4class{CompressedSplitDataFrameList} from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
 #'
 #' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{CompressedSplitDataFrameList} objects.
+#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
 #' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
 #'
 #' @return A CompressedSplitDataFrameList.
@@ -18,12 +20,12 @@
 #'
 #' tmp <- tempfile()
 #' saveObject(Y, tmp)
-#' readDataFrameList(tmp)
+#' readObject(tmp)
 #'
 #' @export
 #' @aliases loadDataFrameList
-readDataFrameList <- function(path, ...) {
-    .read_compressed_list(path, "data_frame_list", ...)
+readDataFrameList <- function(path, metadata, ...) {
+    .read_compressed_list(path, metadata, "data_frame_list", ...)
 }
 
 ##############################

@@ -3,6 +3,7 @@
 #' Read a \linkS4class{GRangesList} object from its on-disk representation.
 #' 
 #' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{GRangesList}s.
+#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
 #' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
 #'
 #' @return A \linkS4class{GRangesList} object.
@@ -14,12 +15,12 @@
 #'
 #' tmp <- tempfile()
 #' saveObject(grl, tmp)
-#' readGRangesList(tmp)
+#' readObject(tmp)
 #' 
 #' @export
 #' @aliases loadGRangesList
-readGRangesList <- function(path, ...) {
-    .read_compressed_list(path, "genomic_ranges_list", ...)
+readGRangesList <- function(path, metadata, ...) {
+    .read_compressed_list(path, metadata, "genomic_ranges_list", ...)
 }
 
 ##############################

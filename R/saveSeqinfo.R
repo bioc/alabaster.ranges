@@ -73,7 +73,7 @@ setMethod("saveObject", "Seqinfo", function(x, path, ...) {
         }
     })
 
-    write(file=file.path(path, "OBJECT"), name)
+    saveObjectFile(path, name, list(sequence_information=list(version="1.0")))
     invisible(NULL)
 })
 

@@ -1,8 +1,10 @@
 #' Load an atomic vector list
 #'
-#' Load a list of atomic vectors as a \linkS4class{CompressedAtomicList}, typically from files created by the corresponding \code{\link{saveObject}} method.
+#' Load a list of atomic vectors as a \linkS4class{CompressedAtomicList} from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
 #'
 #' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{CompressedAtomicList}s.
+#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
 #' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
 #'
 #' @return A CompressedAtomicList of the relevant type.
@@ -18,16 +20,16 @@
 #'
 #' tmp <- tempfile()
 #' saveObject(X, tmp)
-#' readAtomicVectorList(tmp)
+#' readObject(tmp)
 #'
 #' @export
 #' @aliases loadAtomicVectorList
-readAtomicVectorList <- function(path, ...) {
-    .read_compressed_list(path, "atomic_vector_list", ...)
+readAtomicVectorList <- function(path, metadata, ...) {
+    .read_compressed_list(path, metadata, "atomic_vector_list", ...)
 }
 
 #' @import BiocGenerics IRanges rhdf5 alabaster.base
-.read_compressed_list <- function(path, name, ...) {
+.read_compressed_list <- function(path, metadata, name, ...) {
     concat <- altReadObject(file.path(path, "concatenated"), ...)
 
     fpath <- file.path(path, "partitions.h5")

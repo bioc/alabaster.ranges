@@ -5,10 +5,12 @@
 \alias{loadAtomicVectorList}
 \title{Load an atomic vector list}
 \usage{
-readAtomicVectorList(path, ...)
+readAtomicVectorList(path, metadata, ...)
 }
 \arguments{
 \item{path}{String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{CompressedAtomicList}s.}
+
+\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
 
 \item{...}{Further arguments, to be passed to internal \code{\link{altReadObject}} calls.}
 }
@@ -16,7 +18,8 @@ readAtomicVectorList(path, ...)
 A CompressedAtomicList of the relevant type.
 }
 \description{
-Load a list of atomic vectors as a \linkS4class{CompressedAtomicList}, typically from files created by the corresponding \code{\link{saveObject}} method.
+Load a list of atomic vectors as a \linkS4class{CompressedAtomicList} from its on-disk representation.
+This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
 }
 \examples{
 library(S4Vectors)
@@ -24,7 +27,7 @@ X <- splitAsList(LETTERS, sample(3, 26, replace=TRUE))
 
 tmp <- tempfile()
 saveObject(X, tmp)
-readAtomicVectorList(tmp)
+readObject(tmp)
 
 }
 \seealso{

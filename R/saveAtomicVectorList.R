@@ -42,14 +42,16 @@ setMethod("saveObject", "CompressedAtomicList", function(x, path, ...) .save_com
 
     ghandle <- H5Gcreate(fhandle, name)
     on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
-    h5_write_attribute(ghandle, "version", "1.0", scalar=TRUE)
 
     h5_write_vector(ghandle, "lengths", lengths(x), type="H5T_NATIVE_UINT32")
     if (!is.null(names(x))) {
         h5_write_vector(ghandle, "names", names(x))
     }
 
-    write(file=file.path(path, "OBJECT"), name)
+    extras <- list(list(version="1.0"))
+    names(extras) <- name
+    saveObjectFile(path, name, extras)
+
     invisible(NULL)
 }
 

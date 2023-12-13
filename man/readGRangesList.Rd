@@ -5,10 +5,12 @@
 \alias{loadGRangesList}
 \title{Read a GRangesList from disk}
 \usage{
-readGRangesList(path, ...)
+readGRangesList(path, metadata, ...)
 }
 \arguments{
 \item{path}{String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{GRangesList}s.}
+
+\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
 
 \item{...}{Further arguments, to be passed to internal \code{\link{altReadObject}} calls.}
 }
@@ -25,6 +27,6 @@ grl <- split(gr, rep(1:3, length.out=length(gr)))
 
 tmp <- tempfile()
 saveObject(grl, tmp)
-readGRangesList(tmp)
+readObject(tmp)
 
 }

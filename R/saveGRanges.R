@@ -43,7 +43,6 @@ setMethod("saveObject", "GRanges", function(x, path, ...) {
     name <- "genomic_ranges"
     ghandle <- H5Gcreate(fhandle, name)
     on.exit(H5Gclose(ghandle), add=TRUE, after=FALSE)
-    h5_write_attribute(ghandle, "version", "1.0", scalar=TRUE)
 
     seqcodes <- match(as.character(seqnames(x)), seqnames(seqinfo(x))) - 1L
     h5_write_vector(ghandle, "sequence", seqcodes, type="H5T_NATIVE_UINT32")
@@ -55,7 +54,7 @@ setMethod("saveObject", "GRanges", function(x, path, ...) {
         h5_write_vector(ghandle, "name", names(x))
     }
 
-    write(file=file.path(path, "OBJECT"), name)
+    saveObjectFile(path, name, list(genomic_ranges=list(version="1.0")))
     invisible(NULL)
 })
 
