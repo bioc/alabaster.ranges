@@ -44,7 +44,7 @@ readSeqinfo <- function(path, metadata, ...) {
     circular <- local({ 
         dhandle <- H5Dopen(ghandle, "circular")
         on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
-        contents <- H5Dread(dhandle, drop=FALSE)
+        contents <- H5Dread(dhandle, drop=TRUE)
         missing.placeholder <- h5_read_attribute(dhandle, missingPlaceholderName, check=TRUE, default=NULL)
         h5_cast(contents, expected.type="boolean", missing.placeholder=missing.placeholder)
     })
@@ -52,7 +52,7 @@ readSeqinfo <- function(path, metadata, ...) {
     seqlengths <- local({
         dhandle <- H5Dopen(ghandle, "length")
         on.exit(H5Dclose(dhandle), add=TRUE, after=FALSE)
-        contents <- H5Dread(dhandle, bit64conversion="double")
+        contents <- H5Dread(dhandle, bit64conversion="double", drop=TRUE)
         missing.placeholder <- h5_read_attribute(dhandle, missingPlaceholderName, check=TRUE, default=NULL, bit64conversion="double")
         h5_cast(contents, expected.type="integer", missing.placeholder=missing.placeholder)
     })
