@@ -28,7 +28,7 @@
 setMethod("saveObject", "GRanges", function(x, path, ...) {
     dir.create(path, showWarnings=FALSE)
 
-    saveObject(seqinfo(x), file.path(path, "sequence_information"), ...)
+    altSaveObject(seqinfo(x), file.path(path, "sequence_information"), ...)
     saveMetadata(
         x, 
         mcols.path=file.path(path, "range_annotations"),
