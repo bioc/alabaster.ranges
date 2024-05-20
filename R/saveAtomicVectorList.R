@@ -28,7 +28,7 @@ setMethod("saveObject", "CompressedAtomicList", function(x, path, ...) .save_com
 #' @import BiocGenerics IRanges rhdf5 alabaster.base
 .save_compressed_list <- function(x, path, name, ...) {
     dir.create(path, showWarnings=FALSE)
-    saveObject(unlist(x, use.names=FALSE), file.path(path, "concatenated"), ...)
+    altSaveObject(unlist(x, use.names=FALSE), file.path(path, "concatenated"), ...)
     saveMetadata(
          x,
          metadata.path=file.path(path, "other_annotations"),
