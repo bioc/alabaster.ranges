@@ -24,7 +24,7 @@
 readSeqinfo <- function(path, metadata, ...) {
     fpath <- file.path(path, "info.h5")
 
-    fhandle <- H5Fopen(fpath, "H5F_ACC_RDONLY")
+    fhandle <- H5Fopen(fpath, flags="H5F_ACC_RDONLY")
     on.exit(H5Fclose(fhandle), add=TRUE, after=FALSE)
 
     name <- "sequence_information"
