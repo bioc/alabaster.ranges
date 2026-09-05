@@ -8,27 +8,26 @@
 \S4method{saveObject}{Seqinfo}(x, path, ...)
 }
 \arguments{
-\item{x}{A \linkS4class{Seqinfo} object.}
+\item{x}{A \link[Seqinfo]{Seqinfo} object.}
 
 \item{path}{String containing the path to a directory in which to save \code{x}.}
 
-\item{...}{Further arguments to pass to specific methods.}
+\item{...}{Additional named arguments to pass to specific methods.}
 }
 \value{
 \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 }
 \description{
-Save a \linkS4class{Seqinfo} object to its on-disk representation.
+Save a \link[Seqinfo]{Seqinfo} object to its on-disk representation.
 }
 \examples{
 si <- Seqinfo(c("chrA", "chrB"), c(1000, 2000))
 
 tmp <- tempfile()
-dir.create(tmp)
-saveObject(si, tmp, path="seqinfo")
+saveObject(si, tmp)
 list.files(tmp, recursive=TRUE)
 
 }
 \seealso{
-\code{\link{readSeqinfo}}, to read a \linkS4class{Seqinfo} from disk.
+\code{\link{readSeqinfo}}, to read a \link[Seqinfo]{Seqinfo} from disk.
 }

@@ -1,15 +1,15 @@
 #' Save compressed lists of data frames to disk
 #'
-#' Save a \linkS4class{CompressedSplitDataFrameList} object to its on-disk representation.
+#' Save a \link[IRanges]{CompressedSplitDataFrameList} object to its on-disk representation.
 #'
-#' @param x A \linkS4class{CompressedSplitDataFrameList} object.
+#' @param x A \link[IRanges]{CompressedSplitDataFrameList} object.
 #' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
 #' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
 #' @seealso
-#' \code{\link{readDataFrameList}}, to read a \linkS4class{CompressedSplitDataFrameList} from disk.
+#' \code{\link{readDataFrameList}}, to read a \link[IRanges]{CompressedSplitDataFrameList} from disk.
 #'
 #' @author Aaron Lun
 #' @examples

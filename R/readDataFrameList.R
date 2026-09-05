@@ -1,11 +1,11 @@
 #' Load a data frame list
 #'
-#' Load a list of data frames as a \linkS4class{CompressedSplitDataFrameList} from its on-disk representation.
-#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+#' Load a list of data frames as a \link[IRanges]{CompressedSplitDataFrameList} from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 #'
-#' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{CompressedSplitDataFrameList} objects.
-#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
-#' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
+#' @param path String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for \link[IRanges]{CompressedSplitDataFrameList} objects.
+#' @param metadata Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.
+#' @param ... Further arguments, to be passed to internal \code{\link[alabaster.base]{altReadObject}} calls.
 #'
 #' @return A CompressedSplitDataFrameList.
 #'
@@ -34,6 +34,7 @@ readDataFrameList <- function(path, metadata, ...) {
 
 #' @export
 loadDataFrameList <- function(info, project) {
+    .Deprecated(old = "loadDataFrameList", new = "readDataFrameList")
     concat.info <- acquireMetadata(project, info$data_frame_list$concatenated$resource$path)
     concat <- .loadObject(concat.info, project=project)
     .load_compressed(concat, info, project=project)

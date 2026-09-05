@@ -1,13 +1,13 @@
 #' Read a Seqinfo from disk
 #'
-#' Read a \linkS4class{Seqinfo} object from its on-disk representation.
-#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+#' Read a \link[Seqinfo]{Seqinfo} object from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 #' 
-#' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for Seqinfo objects.
-#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
+#' @param path String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for Seqinfo objects.
+#' @param metadata Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.
 #' @param ... Further arguments, ignored.
 #'
-#' @return A \linkS4class{Seqinfo} object.
+#' @return A \link[Seqinfo]{Seqinfo} object.
 #' @seealso
 #' \code{"\link{saveObject,Seqinfo-method}"} for the corresponding saving method.
 #'
@@ -66,6 +66,7 @@ readSeqinfo <- function(path, metadata, ...) {
 
 #' @export
 loadSeqinfo <- function(info, project) {
+    .Deprecated(old = "loadSeqinfo", new = "readSeqinfo")
     si.path <- acquireFile(project, info$path)
     si.df <- .quickReadCsv(si.path, 
         c(seqnames="character", seqlengths="integer", isCircular="logical", genome="character"), 

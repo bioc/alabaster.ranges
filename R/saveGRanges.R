@@ -1,15 +1,15 @@
 #' Save a GRanges object to disk
 #'
-#' Save a \linkS4class{GRanges} object to its on-disk representation .
+#' Save a \link[GenomicRanges]{GRanges} object to its on-disk representation .
 #' 
-#' @param x A \linkS4class{GRanges} object or one of its subclasses.
+#' @param x A \link[GenomicRanges]{GRanges} object or one of its subclasses.
 #' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
 #' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
 #' @seealso
-#' \code{\link{readGRanges}}, to read a \linkS4class{GRanges} from disk.
+#' \code{\link{readGRanges}}, to read a \link[GenomicRanges]{GRanges} from disk.
 #'
 #' @examples
 #' gr <- GRanges(c("chrA", "chrB"), IRanges(c(1, 5), c(100, 200)))

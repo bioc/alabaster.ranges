@@ -1,22 +1,21 @@
 #' Save a Seqinfo object to disk
 #'
-#' Save a \linkS4class{Seqinfo} object to its on-disk representation.
+#' Save a \link[Seqinfo]{Seqinfo} object to its on-disk representation.
 #'
-#' @param x A \linkS4class{Seqinfo} object. 
+#' @param x A \link[Seqinfo]{Seqinfo} object. 
 #' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
 #' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
 #' @seealso
-#' \code{\link{readSeqinfo}}, to read a \linkS4class{Seqinfo} from disk.
+#' \code{\link{readSeqinfo}}, to read a \link[Seqinfo]{Seqinfo} from disk.
 #'
 #' @examples
 #' si <- Seqinfo(c("chrA", "chrB"), c(1000, 2000))
 #'
 #' tmp <- tempfile()
-#' dir.create(tmp)
-#' saveObject(si, tmp, path="seqinfo")
+#' saveObject(si, tmp)
 #' list.files(tmp, recursive=TRUE)
 #'
 #' @export

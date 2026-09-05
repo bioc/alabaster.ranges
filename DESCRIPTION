@@ -25,7 +25,7 @@ Suggests:
     BiocStyle,
     jsonlite
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
 biocViews:
     DataImport,
     DataRepresentation
+Config/roxygen2/version: 8.1.0

@@ -8,17 +8,17 @@
 \S4method{saveObject}{GRangesList}(x, path, ...)
 }
 \arguments{
-\item{x}{A \linkS4class{GRangesList} object.}
+\item{x}{A \link[GenomicRanges]{GRangesList} object.}
 
 \item{path}{String containing the path to a directory in which to save \code{x}.}
 
-\item{...}{Further arguments to pass to specific methods.}
+\item{...}{Additional named arguments to pass to specific methods.}
 }
 \value{
 \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 }
 \description{
-Save a \linkS4class{GRangesList} object to its on-disk representation.
+Save a \link[GenomicRanges]{GRangesList} object to its on-disk representation.
 }
 \examples{
 gr <- GRanges("chrA", IRanges(1:100, width=1))
@@ -30,7 +30,7 @@ list.files(tmp, recursive=TRUE)
 
 }
 \seealso{
-\code{\link{readGRangesList}}, to read a \linkS4class{GRangesList} from disk.
+\code{\link{readGRangesList}}, to read a \link[GenomicRanges]{GRangesList} from disk.
 }
 \author{
 Aaron Lun

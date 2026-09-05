@@ -8,18 +8,18 @@
 readGRanges(path, metadata, ...)
 }
 \arguments{
-\item{path}{String containing a path to a directory, itself created with the \code{\link{stageObject}} method for \linkS4class{GRanges}.}
+\item{path}{String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for \link[GenomicRanges]{GRanges}.}
 
-\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
+\item{metadata}{Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.}
 
-\item{...}{Further arguments to pass to internal \code{\link{altReadObject}} calls.}
+\item{...}{Further arguments to pass to internal \code{\link[alabaster.base]{altReadObject}} calls.}
 }
 \value{
-A \linkS4class{GRanges} object.
+A \link[GenomicRanges]{GRanges} object.
 }
 \description{
-Read a \linkS4class{GRanges} object from its on-disk representation.
-This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+Read a \link[GenomicRanges]{GRanges} object from its on-disk representation.
+This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 }
 \examples{
 gr <- GRanges(c("chrA", "chrB"), IRanges(c(1, 5), c(100, 200)))
@@ -31,7 +31,7 @@ readObject(tmp)
 
 }
 \seealso{
-\code{"\link{saveObject,GRanges-method}"}, to save a \linkS4class{GRanges} to disk.
+\code{"\link{saveObject,GRanges-method}"}, to save a \link[GenomicRanges]{GRanges} to disk.
 }
 \author{
 Aaron Lun

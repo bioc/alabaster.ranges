@@ -1,15 +1,15 @@
 #' Save compressed list of atomic vectors to disk
 #'
-#' Save a \linkS4class{CompressedAtomicList} object to its on-disk representation.
+#' Save a \link[IRanges]{CompressedAtomicList} object to its on-disk representation.
 #'
-#' @param x A \linkS4class{CompressedAtomicList} object.
+#' @param x A \link[IRanges]{CompressedAtomicList} object.
 #' @inheritParams alabaster.base::saveObject
 #'
 #' @return 
 #' \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 #'
 #' @seealso
-#' \code{\link{readAtomicVectorList}}, to read a \linkS4class{CompressedAtomicList} from disk.
+#' \code{\link{readAtomicVectorList}}, to read a \link[IRanges]{CompressedAtomicList} from disk.
 #'
 #' @author Aaron Lun
 #' @examples

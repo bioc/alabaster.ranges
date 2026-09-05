@@ -1,4 +1,3 @@
-# Test stageGRanges on various bits and pieces.
 # library(testthat); library(alabaster.ranges); source("setup.R"); source("test-GRangesList.R")
 
 set.seed(1000)
@@ -12,146 +11,50 @@ names(gr) <- paste0("Exon_", seq_along(gr))
 grl <- splitAsList(gr, sample(length(gr), 100, replace=TRUE))
 names(grl) <- paste0("Gene_", seq_along(grl))
 
-test_that("stageObject works correctly", {
+test_that("saving GRLs works correctly", {
     tmp <- tempfile()
-    dir.create(tmp)
-
-    grlmeta <- .validatedStage(grl, tmp, "grl")
-    expect_true(grlmeta$compressed_list$names)
-    .writeMetadata(grlmeta, tmp)
-
-    expect_null(grlmeta$compressed_list$element_data) # no metadata yet
-    expect_null(grlmeta$compressed_list$other_data) 
-    expect_identical(grlmeta$compressed_list$compression, "gzip")
-
-    # Coordinate information is saved correctly. 
-    grmeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$genomic_ranges_list$concatenated$resource$path, ".json")), simplifyVector=FALSE)
-    expect_true(grmeta$genomic_ranges$names)
-
-    grouping <- read.csv(file.path(tmp, grlmeta$path), row.names=1)
-    expect_false(is.null(grouping$number))
-    expect_identical(rownames(grouping), names(grl))
-
-    # Round trip works.
-    grl2 <- loadGRangesList(grlmeta, tmp)
-    expect_identical(grl2, grl)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
+    saveObject(grl, tmp)
+    expect_identical(grl, readObject(tmp))
 })
 
-test_that("stageObject handles its own metadata", {
+test_that("saving GRLs handles its own metadata", {
     mcols(grl)$stuff <- sample(LETTERS, length(grl), replace=TRUE)
 
     tmp <- tempfile()
-    dir.create(tmp)
-    grlmeta <- .validatedStage(grl, tmp, "grl")
-    expect_false(is.null(grlmeta$compressed_list$element_data))
-
-    emeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$compressed_list$element_data$resource$path, ".json")), simplifyVector=FALSE)
-    expect_identical(length(emeta$data_frame$columns), 1L)
-
-    grl2 <- loadGRangesList(grlmeta, tmp)
-    expect_identical(grl2, grl)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
-
-    # Ignoring them.
-    out <- stageObject(grl, tmp, "nomcols", mcols.name=NULL)
-    expect_null(out$compressed_list$element_data)
-
-    grl3 <- loadGRangesList(out, tmp)
-    expect_identical(ncol(mcols(grl3)), 0L)
+    saveObject(grl, tmp)
+    expect_identical(grl, readObject(tmp))
 })
 
-test_that("stageObject handles GRLs with internal metadata", {
-    tmp <- tempfile()
-    dir.create(tmp)
-
+test_that("saving GRLs handles GRLs with internal metadata", {
     mcols(grl@unlistData)$stuff <- rpois(length(grl@unlistData), lambda=5)
-    grlmeta <- .validatedStage(grl, tmp, "grl")
 
-    # Coordinate information is saved correctly. 
-    cat.path <- grlmeta$genomic_ranges_list$concatenated$resource$path
-    grmeta <- jsonlite::fromJSON(file.path(tmp, paste0(cat.path, ".json")), simplifyVector=FALSE)
-    grdf <- read.csv(file.path(tmp, grmeta$genomic_ranges$range_data$resource$path))
-    expect_identical(grdf$stuff, unlist(grl)$stuff)
-
-    # Round trip works correctly.
-    grl2 <- loadGRangesList(grlmeta, tmp)
-    expect_identical(grl2, grl)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
+    tmp <- tempfile()
+    saveObject(grl, tmp)
+    expect_identical(grl, readObject(tmp))
 })
 
-test_that("stageObject handles unnamed GRLs", {
-    tmp <- tempfile()
-    dir.create(tmp)
-
+test_that("saving GRLs handles unnamed GRLs", {
     names(grl@unlistData) <- NULL
     names(grl) <- NULL
 
-    grlmeta <- .validatedStage(grl, tmp, "grl")
-    expect_false(grlmeta$compressed_list$names)
-    grmeta <- jsonlite::fromJSON(file.path(tmp, paste0(grlmeta$genomic_ranges_list$concatenated$resource$path, ".json")), simplifyVector=FALSE)
-    expect_false(grmeta$genomic_ranges$names)
-
-    # Round trip works.
-    grl2 <- loadGRangesList(grlmeta, tmp)
-    expect_identical(grl2, grl)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
+    tmp <- tempfile()
+    saveObject(grl, tmp)
+    expect_identical(grl, readObject(tmp))
 })
 
-test_that("stageObject handles empty GRLs", {
-    tmp <- tempfile()
-    dir.create(tmp)
-
+test_that("saving GRLs handles empty GRLs", {
     copy <- GRangesList(rep(list(GRanges()), 100))
     names(copy) <- seq_len(100)
 
-    grlmeta <- .validatedStage(copy, tmp, "grl")
-
-    grl2 <- loadGRangesList(grlmeta, tmp)
-    expect_identical(grl2, copy)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
+    tmp <- tempfile()
+    saveObject(copy, tmp)
+    expect_identical(copy, readObject(tmp))
 })
 
-test_that("stageObject works with extra metadata", {
+test_that("saving GRLs works with extra metadata", {
     metadata(grl) <- list(WHEE="foo")
 
     tmp <- tempfile()
-    dir.create(tmp)
-    out <- .validatedStage(grl, tmp, "thing")
-    expect_false(is.null(out$compressed_list$other_data))
-
-    grl2 <- loadGRangesList(out, tmp)
-    expect_equal(grl, grl2)
-
-    # Works in the new world.
-    tmp2 <- tempfile()
-    saveObject(grl, tmp2)
-    expect_identical(grl, readObject(tmp2))
-
-    # Ignoring them.
-    out <- stageObject(grl, tmp, "nometa", meta.name=NULL)
-    expect_null(out$compressed_list$other_data)
-
-    grl3 <- loadGRangesList(out, tmp)
-    expect_identical(length(metadata(grl3)), 0L)
+    saveObject(grl, tmp)
+    expect_identical(grl, readObject(tmp))
 })

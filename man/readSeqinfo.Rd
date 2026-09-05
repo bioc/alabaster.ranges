@@ -8,18 +8,18 @@
 readSeqinfo(path, metadata, ...)
 }
 \arguments{
-\item{path}{String containing a path to a directory, itself created with the \code{\link{saveObject}} method for Seqinfo objects.}
+\item{path}{String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for Seqinfo objects.}
 
-\item{metadata}{Named list of metadata for this object, see \code{\link{readObjectFile}} for details.}
+\item{metadata}{Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.}
 
 \item{...}{Further arguments, ignored.}
 }
 \value{
-A \linkS4class{Seqinfo} object.
+A \link[Seqinfo]{Seqinfo} object.
 }
 \description{
-Read a \linkS4class{Seqinfo} object from its on-disk representation.
-This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+Read a \link[Seqinfo]{Seqinfo} object from its on-disk representation.
+This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 }
 \examples{
 si <- Seqinfo(c("chrA", "chrB"), c(1000, 2000))

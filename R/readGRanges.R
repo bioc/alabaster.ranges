@@ -1,16 +1,16 @@
 #' Read a GRanges from disk
 #'
-#' Read a \linkS4class{GRanges} object from its on-disk representation.
-#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+#' Read a \link[GenomicRanges]{GRanges} object from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 #' 
-#' @param path String containing a path to a directory, itself created with the \code{\link{stageObject}} method for \linkS4class{GRanges}.
-#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
-#' @param ... Further arguments to pass to internal \code{\link{altReadObject}} calls.
+#' @param path String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for \link[GenomicRanges]{GRanges}.
+#' @param metadata Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.
+#' @param ... Further arguments to pass to internal \code{\link[alabaster.base]{altReadObject}} calls.
 #'
-#' @return A \linkS4class{GRanges} object.
+#' @return A \link[GenomicRanges]{GRanges} object.
 #'
 #' @seealso
-#' \code{"\link{saveObject,GRanges-method}"}, to save a \linkS4class{GRanges} to disk.
+#' \code{"\link{saveObject,GRanges-method}"}, to save a \link[GenomicRanges]{GRanges} to disk.
 #'
 #' @author Aaron Lun
 #'
@@ -61,6 +61,8 @@ readGRanges <- function(path, metadata, ...) {
 
 #' @export
 loadGRanges <- function(info, project) {
+    .Deprecated(old = "loadGRanges", new = "readGRanges")
+
     # First, pulling out the seqinfo.
     si.info <- acquireMetadata(project, info$genomic_ranges$sequence_information$resource$path)
     SI <- .loadObject(si.info, project)

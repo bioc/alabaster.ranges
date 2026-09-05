@@ -8,17 +8,17 @@
 \S4method{saveObject}{CompressedAtomicList}(x, path, ...)
 }
 \arguments{
-\item{x}{A \linkS4class{CompressedAtomicList} object.}
+\item{x}{A \link[IRanges]{CompressedAtomicList} object.}
 
 \item{path}{String containing the path to a directory in which to save \code{x}.}
 
-\item{...}{Further arguments to pass to specific methods.}
+\item{...}{Additional named arguments to pass to specific methods.}
 }
 \value{
 \code{x} is saved to \code{path}, and \code{NULL} is invisibly returned.
 }
 \description{
-Save a \linkS4class{CompressedAtomicList} object to its on-disk representation.
+Save a \link[IRanges]{CompressedAtomicList} object to its on-disk representation.
 }
 \examples{
 library(S4Vectors)
@@ -30,7 +30,7 @@ list.files(tmp, recursive=TRUE)
 
 }
 \seealso{
-\code{\link{readAtomicVectorList}}, to read a \linkS4class{CompressedAtomicList} from disk.
+\code{\link{readAtomicVectorList}}, to read a \link[IRanges]{CompressedAtomicList} from disk.
 }
 \author{
 Aaron Lun

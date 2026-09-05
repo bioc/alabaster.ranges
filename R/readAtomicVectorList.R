@@ -1,11 +1,11 @@
 #' Load an atomic vector list
 #'
-#' Load a list of atomic vectors as a \linkS4class{CompressedAtomicList} from its on-disk representation.
-#' This is usually not directly called by users, but is instead called by dispatch in \code{\link{readObject}}.
+#' Load a list of atomic vectors as a \link[IRanges]{CompressedAtomicList} from its on-disk representation.
+#' This is usually not directly called by users, but is instead called by dispatch in \code{\link[alabaster.base]{readObject}}.
 #'
-#' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{CompressedAtomicList}s.
-#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
-#' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
+#' @param path String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for \link[IRanges]{CompressedAtomicList}s.
+#' @param metadata Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.
+#' @param ... Further arguments, to be passed to internal \code{\link[alabaster.base]{altReadObject}} calls.
 #'
 #' @return A CompressedAtomicList of the relevant type.
 #'

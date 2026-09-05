@@ -1,12 +1,15 @@
 #' Read a GRangesList from disk
 #'
-#' Read a \linkS4class{GRangesList} object from its on-disk representation.
+#' Read a \link[GenomicRanges]{GRangesList} object from its on-disk representation.
 #' 
-#' @param path String containing a path to a directory, itself created with the \code{\link{saveObject}} method for \linkS4class{GRangesList}s.
-#' @param metadata Named list of metadata for this object, see \code{\link{readObjectFile}} for details.
-#' @param ... Further arguments, to be passed to internal \code{\link{altReadObject}} calls.
+#' @param path String containing a path to a directory, itself created with the \code{\link[alabaster.base]{saveObject}} method for \link[GenomicRanges]{GRangesList}s.
+#' @param metadata Named list of metadata for this object, see \code{\link[alabaster.base]{readObjectFile}} for details.
+#' @param ... Further arguments, to be passed to internal \code{\link[alabaster.base]{altReadObject}} calls.
 #'
-#' @return A \linkS4class{GRangesList} object.
+#' @return A \link[GenomicRanges]{GRangesList} object.
+#'
+#' @seealso
+#' \code{"\link{saveObject,GRangesList-method}"}, to save an object to disk.
 #'
 #' @examples
 #' gr <- GRanges(c("chrA", "chrB"), IRanges(c(1, 5), c(100, 200)))
@@ -29,6 +32,7 @@ readGRangesList <- function(path, metadata, ...) {
 
 #' @export
 loadGRangesList <- function(info, project) {
+    .Deprecated(old = "loadGRangesList", new = "readGRangesList")
     concat.info <- acquireMetadata(project, info$genomic_ranges_list$concatenated$resource$path)
     concat <- .loadObject(concat.info, project=project)
     .load_compressed(concat, info, project)
